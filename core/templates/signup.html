@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title mb-4 text-center text-primary">📝 Create an Account</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% bootstrap_form form %}
+
+          <div class="d-grid gap-2 mt-3">
+            <button type="submit" class="btn btn-success">Sign Up</button>
+          </div>
+        </form>
+
+        <p class="mt-3 text-center">
+          Already have an account?
+          <a href="{% url 'login' %}" class="text-decoration-none fw-semibold">Login here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

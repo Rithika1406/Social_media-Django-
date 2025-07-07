@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}Explore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center text-primary mb-4">🌍 Explore</h2>
+
+  <!-- Trending Hashtags Section -->
+  <div class="mb-5">
+    <h5 class="mb-3">🔥 Trending Hashtags</h5>
+    {% if trending_tags %}
+      <ul class="list-inline">
+        {% for tag, count in trending_tags %}
+          <li class="list-inline-item mb-2">
+            <a href="{% url 'hashtag_view' tag %}" class="badge bg-dark text-white fs-6 px-3 py-2">
+              #{{ tag }} <span class="small">({{ count }})</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No trending hashtags yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Latest Posts Section -->
+  <div>
+    <h5 class="mb-3">🆕 Latest Posts</h5>
+    {% if posts %}
+      {% for post in posts %}
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'user_profile' post.user.username %}" class="fw-bold text-dark text-decoration-none">
+                @{{ post.user.username }}
+              </a>
+              <small class="text-muted">{{ post.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+
+            <p class="mt-2 mb-2">{{ post.parsed_content|default:post.content|linebreaksbr|safe }}</p>
+
+            {% if post.image %}
+              <img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post image">
+            {% endif %}
+
+            {% if post.video %}
+              <div class="ratio ratio-16x9 mb-2">
+                <video controls>
+                  <source src="{{ post.video.url }}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-info">No posts available yet!</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

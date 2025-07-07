@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}Following Feed{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center text-success mb-4">👥 Following Feed</h2>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+
+          <!-- Post Header -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <a href="{% url 'user_profile' post.user.username %}" class="fw-bold text-decoration-none text-dark">
+              @{{ post.user.username }}
+            </a>
+            <small class="text-muted">{{ post.created_at|date:"M d, Y H:i" }}</small>
+          </div>
+
+          <!-- Post Content -->
+          <p class="mb-2">{{ post.parsed_content|default:post.content|linebreaksbr|safe }}</p>
+
+          <!-- Post Image -->
+          {% if post.image %}
+            <img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post image">
+          {% endif %}
+
+          <!-- Post Video -->
+          {% if post.video %}
+            <div class="ratio ratio-16x9 mb-2">
+              <video controls>
+                <source src="{{ post.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          {% endif %}
+
+          <!-- Actions -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+              <form action="{% url 'like' post.pk %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  ❤️ {{ post.likes.count }} Like{{ post.likes.count|pluralize }}
+                </button>
+              </form>
+
+              <a href="{% url 'comment_create' post.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                💬 {{ post.comments.count }} Comment{{ post.comments.count|pluralize }}
+              </a>
+            </div>
+
+            {% if request.user == post.user %}
+              <a href="{% url 'post_delete' post.pk %}" class="btn btn-sm btn-outline-secondary">
+                🗑 Delete
+              </a>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info text-center">
+      No posts from users you follow yet. <a href="{% url 'explore' %}" class="fw-bold text-decoration-none">Discover new users</a>!
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

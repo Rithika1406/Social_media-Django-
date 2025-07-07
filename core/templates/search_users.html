@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-primary">🔍 Search Results for "<span class="fw-bold">{{ query }}</span>"</h2>
+
+  {% if users %}
+    <div class="list-group shadow-sm">
+      {% for user in users %}
+        <a href="{% url 'user_profile' user.username %}" class="list-group-item list-group-item-action">
+          <i class="bi bi-person-circle me-2"></i> {{ user.username }}
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-warning text-center">
+      No users found matching "<strong>{{ query }}</strong>".
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

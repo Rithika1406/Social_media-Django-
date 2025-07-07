@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}#{{ tag }} Posts{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-primary">📌 Posts tagged with <span class="text-dark">#{{ tag }}</span></h2>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <!-- Post Author & Time -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">
+              <a href="{% url 'user_profile' post.user.username %}" class="fw-bold text-dark text-decoration-none">
+                @{{ post.user.username }}
+              </a>
+            </h5>
+            <small class="text-muted">{{ post.created_at|date:"M d, Y H:i" }}</small>
+          </div>
+
+          <!-- Post Content -->
+          <p class="mb-2">{{ post.parsed_content|default:post.content|linebreaksbr|safe }}</p>
+
+          <!-- Post Image -->
+          {% if post.image %}
+            <img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post Image">
+          {% endif %}
+
+          <!-- Post Video -->
+          {% if post.video %}
+            <div class="ratio ratio-16x9 mb-2">
+              <video controls>
+                <source src="{{ post.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          {% endif %}
+
+          <!-- Post Actions -->
+          <div class="d-flex justify-content-start align-items-center mt-3">
+            <span class="me-3 text-danger">❤️ {{ post.likes.count }} like{{ post.likes.count|pluralize }}</span>
+            <span class="text-primary">💬 {{ post.comments.count }} comment{{ post.comments.count|pluralize }}</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-warning text-center">
+      No posts found with <strong>#{{ tag }}</strong>.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
